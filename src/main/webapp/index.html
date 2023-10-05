@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Upload</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <div id="main">
+        <h1>Upload Your Images</h1>
+        <form action="upload" method="post">
+            <label>File:</label> <input name="images" type="file" multiple="multiple">
+            <input type="submit" id="btn" value="Upload">
+        </form>
+        <div id="response"></div>
+        <progress value="0" min="0" max="1"></progress>
+        <ul id="image-list">
+
+        </ul>
+    </div>
+</body>
+
+</html>
