@@ -1,50 +1,52 @@
-function UploadFile() {
-    let progress, response;
-    function showUploadedItem(source) {
+class UploadFile {
+    constructor() {
+        this.progress = null;
+        this.response = null;
+    }
+    showUploadedItem(source) {
         let list = document.getElementById("image-list"), li = document.createElement("li");
         let img = document.createElement("img");
         img.src = source;
         li.appendChild(img);
         list.appendChild(li);
     }
-    function upload() {
+    upload(evt) {
         let formdata = new FormData();
-        for (let file of this.files) {
+        for (let file of evt.target.files) {
             let tipo = file.type;
             if (tipo.match(/image.*/)) {
                 let reader = new FileReader();
-                reader.onloadend = function (e) {
-                    showUploadedItem(e.target.result);
+                reader.onloadend = e => {
+                    this.showUploadedItem(e.target.result);
                 };
                 reader.readAsDataURL(file);
                 formdata.append("images[]", file);
             }
         }
         let xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            progress.style.display = "none";
-            response.display = "block";
-            response.innerHTML = xhr.responseText;
+        xhr.onload = () => {
+            this.progress.style.display = "none";
+            this.response.display = "block";
+            this.response.innerHTML = xhr.responseText;
         };
-        xhr.upload.addEventListener("progress", function (e) {
+        xhr.upload.addEventListener("progress", e => {
             let perc = Math.ceil(e.loaded / e.total);
             console.log(`Loaded: ${perc}`);
-            response.display = "none";
-            progress.style.display = "block";
-            progress.value = perc;
+            this.response.display = "none";
+            this.progress.style.display = "block";
+            this.progress.value = perc;
         });
         xhr.open("post", "upload");
         xhr.send(formdata);
         document.forms[0].reset();
     }
-    function registerEvents() {
+    registerEvents() {
         document.getElementById("btn").style.display = "none";
         let input = document.querySelector("input[type='file']");
-        input.onchange = upload;
-        progress = document.querySelector("progress");
-        response = document.getElementById("response");
+        input.onchange = this.upload.bind(this);
+        this.progress = document.querySelector("progress");
+        this.response = document.getElementById("response");
     }
-    return { registerEvents };
 }
 onload = () => {
     let u = new UploadFile();
