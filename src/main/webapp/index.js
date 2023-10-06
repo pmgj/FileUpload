@@ -3,13 +3,6 @@ class UploadFile {
         this.progress = null;
         this.response = null;
     }
-    showUploadedItem(source) {
-        let list = document.getElementById("image-list"), li = document.createElement("li");
-        let img = document.createElement("img");
-        img.src = source;
-        li.appendChild(img);
-        list.appendChild(li);
-    }
     upload(evt) {
         let formdata = new FormData();
         for (let file of evt.target.files) {
@@ -17,17 +10,21 @@ class UploadFile {
             if (tipo.match(/image.*/)) {
                 let reader = new FileReader();
                 reader.onloadend = e => {
-                    this.showUploadedItem(e.target.result);
+                    let list = document.getElementById("image-list"), li = document.createElement("li");
+                    let img = document.createElement("img");
+                    img.src = e.target.result;
+                    li.appendChild(img);
+                    list.appendChild(li);
                 };
                 reader.readAsDataURL(file);
                 formdata.append("images[]", file);
             }
         }
         let xhr = new XMLHttpRequest();
-        xhr.onload = () => {
+        xhr.onload = evt => {
             this.progress.style.display = "none";
             this.response.display = "block";
-            this.response.innerHTML = xhr.responseText;
+            this.response.innerHTML = evt.target.responseText;
         };
         xhr.upload.addEventListener("progress", e => {
             let perc = Math.ceil(e.loaded / e.total);
@@ -45,7 +42,7 @@ class UploadFile {
         let input = document.querySelector("input[type='file']");
         input.onchange = this.upload.bind(this);
         this.progress = document.querySelector("progress");
-        this.response = document.getElementById("response");
+        this.response = document.querySelector("#response");
     }
 }
 onload = () => {
